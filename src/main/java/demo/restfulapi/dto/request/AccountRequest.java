@@ -14,6 +14,4 @@ public class AccountRequest {
     String fullname;
     String email;
     Boolean is_admin = false;
-
-
 }

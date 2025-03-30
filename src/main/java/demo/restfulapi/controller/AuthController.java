@@ -37,14 +37,13 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AccountResponse> register(@RequestBody AccountRequest request) {
         Optional<Account> account = accountService.getAccountByUsername(request.getUsername());
-
-        if (account.isPresent())
+        if (account.isPresent()) {
             return ResponseEntity.badRequest().body(AccountResponse.builder()
                     .username("Tên đăng nhập đã tồn tại.")
                     .build());
-        else
-            accountService.createAccount(request);
-
-        return ResponseEntity.ok(AccountResponse.builder().build());
+        } else {
+            Account createdAccount = accountService.createAccount(request);
+            return ResponseEntity.ok(new AccountResponse(createdAccount));
+        }
     }
 }

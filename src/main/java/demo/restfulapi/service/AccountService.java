@@ -31,10 +31,11 @@ public class AccountService {
 
         account.setUsername(request.getUsername());
         account.setPassword(request.getPassword());
-        account.setEmail(request.getEmail());
         account.setFullname(request.getFullname());
+        account.setEmail(request.getEmail());
 
         accountRepository.save(account);
+
         return account;
     }
 
@@ -45,7 +46,7 @@ public class AccountService {
         account.setPassword(request.getPassword());
         account.setIs_admin(request.getIs_admin());
 
-        System.out.println("Role: " + account.getIs_delete());
+        System.out.println("Role: " + account.getIs_admin());
         account.setFullname(request.getFullname());
 
         Account updatedAccount = accountRepository.save(account);
@@ -54,9 +55,7 @@ public class AccountService {
     }
 
     public void deleteAccount(Integer userId) {
-        Account account = accountRepository.findById(userId).orElseThrow(() -> new RuntimeException("Account not found!"));
-        account.setIs_delete(true);
-        accountRepository.save(account);
+        accountRepository.deleteById(userId);
         //accountRepository.deleteAccount(userId);
     }
 

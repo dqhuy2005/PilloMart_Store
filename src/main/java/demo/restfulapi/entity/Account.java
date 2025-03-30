@@ -14,8 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Account {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
     Integer userId;
 
     @Column(name = "username", nullable = false, length = 50)
@@ -40,6 +42,4 @@ public class Account {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Cart> carts;
 
-    public Account(Integer userId) {
-    }
 }

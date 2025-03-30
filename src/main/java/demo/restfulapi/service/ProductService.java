@@ -36,8 +36,6 @@ public class ProductService {
 
     public Page<ProductResponse> getProductByName(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
-
-        // Trả về ProductRepsonse
         return productRepository.findByCategoryCategoryNameContaining(name, pageable).map(ProductResponse::new);
     }
 
@@ -49,7 +47,6 @@ public class ProductService {
         else
             products = productRepository.findByCategoryName(name);
 
-        // Trả về ProductRepsonse
         return products.stream()
                 .map(ProductResponse::new)
                 .collect(Collectors.toList());
