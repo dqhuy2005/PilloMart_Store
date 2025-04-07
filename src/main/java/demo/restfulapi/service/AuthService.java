@@ -57,7 +57,7 @@ public class AuthService {
     // JWT (header - payload - signer)
     public String generatedToken(Account account) {
         // header
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
 
         // payload
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()

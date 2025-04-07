@@ -13,7 +13,6 @@ import java.util.List;
 
 @RequestMapping("/api/invoice")
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
 public class InvoiceController {
 
     @Autowired

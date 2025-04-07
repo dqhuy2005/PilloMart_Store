@@ -42,4 +42,6 @@ public class Account {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Cart> carts;
 
+    public Account(String name, String password) {
+    }
 }
