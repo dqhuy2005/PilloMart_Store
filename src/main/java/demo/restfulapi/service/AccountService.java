@@ -4,7 +4,7 @@ import demo.restfulapi.dto.request.AccountRequest;
 import demo.restfulapi.dto.response.AccountResponse;
 import demo.restfulapi.entity.Account;
 import demo.restfulapi.repository.AccountRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AccountService {
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     public Page<AccountResponse> getAllAccounts(Pageable pageable) {
         Page<Account> accounts = accountRepository.findAll(pageable);

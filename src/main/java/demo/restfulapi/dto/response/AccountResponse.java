@@ -13,7 +13,6 @@ public class AccountResponse {
 
     Integer id;
     String username;
-    String password;
     String email;
     String fullname;
     Boolean role;
@@ -21,7 +20,6 @@ public class AccountResponse {
     public AccountResponse(Account account) {
         this.id = account.getUserId();
         this.username = account.getUsername();
-        this.password = account.getPassword();
         this.email = account.getEmail();
         this.fullname = account.getFullname();
         this.role = account.getIs_admin();

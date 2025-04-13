@@ -5,6 +5,7 @@ import demo.restfulapi.dto.response.AuthResponse;
 import demo.restfulapi.entity.Account;
 import demo.restfulapi.repository.AccountRepository;
 import demo.restfulapi.service.AuthService;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -69,7 +72,7 @@ public class AuthServiceTest {
     @Test
     public void testLoginEndpoint() {
         // Test qua HTTP endpoint
-        String url = "http://localhost:" + port + "/api/login";
+        String url = "http://localhost:8080/api/login";
 
         AuthRequest request = new AuthRequest("hung", "123");
 
@@ -81,9 +84,22 @@ public class AuthServiceTest {
         ResponseEntity<AuthResponse> response = restTemplate.exchange(
                 url, HttpMethod.POST, entity, AuthResponse.class);
 
-        Assert.assertEquals(response.getStatusCodeValue(), 200);
         Assert.assertNotNull(response.getBody());
         Assertions.assertTrue(response.getBody().getAuthenticated());
         Assertions.assertNotNull(response.getBody().getToken());
     }
+
+    @org.junit.jupiter.api.Test
+    public void testLoginReturnsToken() {
+        given()
+                .baseUri("http://localhost:8080")
+                .contentType("application/json")
+                .body("{ \"username\": \"hung\", \"password\": \"123\" }")
+                .when()
+                .post("/api/login")
+                .then()
+                .statusCode(200)
+                .body("token", notNullValue());
+    }
+
 }

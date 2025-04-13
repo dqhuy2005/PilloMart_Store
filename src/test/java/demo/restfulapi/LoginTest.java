@@ -1,6 +1,5 @@
 package demo.restfulapi;
 
-import demo.restfulapi.utils.ExcelUlti;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -48,25 +47,39 @@ public class LoginTest {
 
             boolean loginFailed = driver.findElements(By.id("username")).isEmpty();
             Assert.assertFalse(loginFailed, ">> Người dùng đăng nhập thành công.");
+
+            WebElement successMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.cssSelector(".notyf__message")));
+
+            System.out.println("Notyf message: " + successMessage.getText());
+
+            Assert.assertTrue(successMessage.getText().contains("Đăng nhập thành công."));
             result.add("Test login success!");
         } catch (Exception e) {
             result.add("Test login failed: " + e.getMessage());
         }
     }
 
-    @Test(groups = "testLogin", description = "Test Case login thất bại")
+    @Test(groups = "testLogin", description = "Test Case login không hợp lệ")
     public void testLoginFailure() {
         try {
             WebElement usernameField = driver.findElement(By.cssSelector("#username"));
             WebElement passwordField = driver.findElement(By.cssSelector("#password"));
             WebElement logBtn = driver.findElement(By.id("login-btn"));
 
-            usernameField.sendKeys("hung");
-            passwordField.sendKeys("!!!123");
+            usernameField.sendKeys("4444444");
+            passwordField.sendKeys("123123123123");
             logBtn.click();
 
             boolean loginFailed = driver.findElements(By.id("logout")).isEmpty();
             Assert.assertTrue(loginFailed, ">> Người dùng đăng nhập thất bại.");
+
+            WebElement successMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.cssSelector(".notyf__message")));
+
+            System.out.println("Notyf message: " + successMessage.getText());
+
+            Assert.assertTrue(successMessage.getText().contains("Đăng nhập thất bại."));
             result.add("Test login failed as expected!");
         } catch (Exception e) {
             result.add("Test case failed due to error: " + e.getMessage());
@@ -80,12 +93,113 @@ public class LoginTest {
             WebElement passwordField = driver.findElement(By.cssSelector("#password"));
             WebElement logBtn = driver.findElement(By.id("login-btn"));
 
-            usernameField.sendKeys("123123123");
+            usernameField.sendKeys("hungquocdanawd");
+            passwordField.sendKeys("123");
+            logBtn.click();
+
+            WebElement successMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.cssSelector(".notyf__message")));
+
+            System.out.println("Notyf message: " + successMessage.getText());
+
+            Assert.assertTrue(successMessage.getText().contains("Đăng nhập thất bại."));
+
+            result.add("Test login with non-existing account passed!");
+        } catch (Exception e) {
+            result.add("Test login with non-existing account failed: " + e.getMessage());
+        }
+    }
+
+    @Test(groups = "testLogin", description = "Test Case login trống tài khoản")
+    public void testLoginEmptyUsername() {
+        try {
+            WebElement usernameField = driver.findElement(By.cssSelector("#username"));
+            WebElement passwordField = driver.findElement(By.cssSelector("#password"));
+            WebElement logBtn = driver.findElement(By.id("login-btn"));
+
+            usernameField.sendKeys("");
             passwordField.sendKeys("123123123");
             logBtn.click();
 
-            WebElement loginNav = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("login")));
-            Assert.assertTrue(loginNav.isDisplayed(), ">> Nút đăng nhập xuất hiện.");
+            WebElement successMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.cssSelector(".notyf__message")));
+
+            System.out.println("Notyf message: " + successMessage.getText());
+
+            Assert.assertTrue(successMessage.getText().contains("Đăng nhập thất bại."));
+
+            result.add("Test login with non-existing account passed!");
+        } catch (Exception e) {
+            result.add("Test login with non-existing account failed: " + e.getMessage());
+        }
+    }
+
+    @Test(groups = "testLogin", description = "Test Case login trống mật khẩu")
+    public void testLoginEmptyPassword() {
+        try {
+            WebElement usernameField = driver.findElement(By.cssSelector("#username"));
+            WebElement passwordField = driver.findElement(By.cssSelector("#password"));
+            WebElement logBtn = driver.findElement(By.id("login-btn"));
+
+            usernameField.sendKeys("hung");
+            passwordField.sendKeys("");
+            logBtn.click();
+
+            WebElement successMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.cssSelector(".notyf__message")));
+
+            System.out.println("Notyf message: " + successMessage.getText());
+
+            Assert.assertTrue(successMessage.getText().contains("Đăng nhập thất bại."));
+
+            result.add("Test login with non-existing account passed!");
+        } catch (Exception e) {
+            result.add("Test login with non-existing account failed: " + e.getMessage());
+        }
+    }
+
+    @Test(groups = "testLogin", description = "Test Case login username có kí tự đặc biệt")
+    public void testLoginUsernameHasSpecialChar() {
+        try {
+            WebElement usernameField = driver.findElement(By.cssSelector("#username"));
+            WebElement passwordField = driver.findElement(By.cssSelector("#password"));
+            WebElement logBtn = driver.findElement(By.id("login-btn"));
+
+            usernameField.sendKeys("hung!@#$%^^&*");
+            passwordField.sendKeys("123");
+            logBtn.click();
+
+            WebElement successMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.cssSelector(".notyf__message")));
+
+            System.out.println("Notyf message: " + successMessage.getText());
+
+            Assert.assertTrue(successMessage.getText().contains("Đăng nhập thất bại."));
+
+            result.add("Test login with non-existing account passed!");
+        } catch (Exception e) {
+            result.add("Test login with non-existing account failed: " + e.getMessage());
+        }
+    }
+
+    @Test(groups = "testLogin", description = "Test Case login password có kí tự đặc biệt")
+    public void testLoginPasswordHasSpecialChar() {
+        try {
+            WebElement usernameField = driver.findElement(By.cssSelector("#username"));
+            WebElement passwordField = driver.findElement(By.cssSelector("#password"));
+            WebElement logBtn = driver.findElement(By.id("login-btn"));
+
+            usernameField.sendKeys("hung");
+            passwordField.sendKeys("333@@@");
+            logBtn.click();
+
+            WebElement successMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.cssSelector(".notyf__message")));
+
+            System.out.println("Notyf message: " + successMessage.getText());
+
+            Assert.assertTrue(successMessage.getText().contains("Đăng nhập thất bại."));
+
             result.add("Test login with non-existing account passed!");
         } catch (Exception e) {
             result.add("Test login with non-existing account failed: " + e.getMessage());
@@ -95,7 +209,6 @@ public class LoginTest {
     @AfterSuite
     public void tearDown() throws IOException {
         System.out.println("Closing browser!!!");
-        ExcelUlti.writeResultsToExcel(result, "D:\\resultL6.xlsx");
         System.out.println("Result: " + result);
 
         if (driver != null) {

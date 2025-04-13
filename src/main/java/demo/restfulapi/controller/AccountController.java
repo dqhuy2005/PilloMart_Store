@@ -3,7 +3,6 @@ package demo.restfulapi.controller;
 import demo.restfulapi.dto.request.AccountRequest;
 import demo.restfulapi.dto.response.AccountResponse;
 import demo.restfulapi.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class AccountController {
 
-    @Autowired
-    private AccountService accountService;
+    private final AccountService accountService;
+
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     @GetMapping("/")
     public ResponseEntity<Page<AccountResponse>> getAllAccounts(
