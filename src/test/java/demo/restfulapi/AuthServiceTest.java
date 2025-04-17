@@ -8,6 +8,7 @@ import demo.restfulapi.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -29,44 +30,38 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AuthServiceTest {
-
-    @Mock
-    private AccountRepository accountRepository;
-
-    @LocalServerPort
-    private int port;
 
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @InjectMocks
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
     private AuthService authService;
 
     @BeforeEach
     public void setup() {
-        ReflectionTestUtils.setField(authService, "SIGNER_KEY", "testSignerKey123456789012345678901234567890");
+        // Tạo user test trong DB
+        Account testAccount = new Account();
+        testAccount.setUsername("asd");
+        testAccount.setPassword("123");
+        testAccount.setIs_active(true);
+        testAccount.setIs_delete(false);
+        accountRepository.save(testAccount);
+        ReflectionTestUtils.setField(authService, "signerKey", "testSignerKey123456789012345678901234567890");
     }
 
     @Test(description = "Check account exists and verify again")
     public void testLoginSuccess() {
-
-        // Request from client
         AuthRequest request = new AuthRequest("hung", "123");
-
-        // Mock data
-        Account mockAccount = new Account("hung", "123");
-
-        when(accountRepository.findAccountByUsername(request.getUsername())).thenReturn(mockAccount);
-
         AuthResponse response = authService.checkUser(request);
 
         Assertions.assertTrue(response.getAuthenticated());
         Assertions.assertNotNull(response.getToken());
-
-        verify(accountRepository).findAccountByUsername(request.getUsername());
     }
 
     @Test
@@ -81,25 +76,11 @@ public class AuthServiceTest {
 
         HttpEntity<AuthRequest> entity = new HttpEntity<>(request, headers);
 
-        ResponseEntity<AuthResponse> response = restTemplate.exchange(
-                url, HttpMethod.POST, entity, AuthResponse.class);
+        ResponseEntity<AuthResponse> response = restTemplate.postForEntity(url, entity, AuthResponse.class);
 
         Assert.assertNotNull(response.getBody());
         Assertions.assertTrue(response.getBody().getAuthenticated());
         Assertions.assertNotNull(response.getBody().getToken());
-    }
-
-    @org.junit.jupiter.api.Test
-    public void testLoginReturnsToken() {
-        given()
-                .baseUri("http://localhost:8080")
-                .contentType("application/json")
-                .body("{ \"username\": \"hung\", \"password\": \"123\" }")
-                .when()
-                .post("/api/login")
-                .then()
-                .statusCode(200)
-                .body("token", notNullValue());
     }
 
 }

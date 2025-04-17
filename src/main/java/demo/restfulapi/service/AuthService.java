@@ -87,12 +87,11 @@ public class AuthService {
                     //.type("JWT")
                     .build();
 
-            // Payload với thêm nhiều thông tin hữu ích
             Instant now = Instant.now();
             JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                     .subject(account.getUsername())
                     .issuer("non4m")
-                    //.jwtID(jwtId) // Thêm JWT ID để theo dõi
+                    .claim("userId", account.getUserId())
                     .claim("username", account.getUsername())
                     .claim("role", account.getIs_admin())
                     .issueTime(Date.from(now))
@@ -108,9 +107,6 @@ public class AuthService {
 
             // Sign token
             jwsObject.sign(new MACSigner(signerKey.getBytes(StandardCharsets.UTF_8)));
-
-            // Lưu thông tin token vào database hoặc cache (tùy chọn)
-            // saveTokenInfo(jwtId, account.getUserId(), jwtClaimsSet.getExpirationTime());
 
             return jwsObject.serialize();
         } catch (JOSEException e) {

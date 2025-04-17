@@ -1,5 +1,6 @@
 package demo.restfulapi;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -16,6 +17,11 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+
+@Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
 public class LoginTest {
@@ -79,7 +85,7 @@ public class LoginTest {
 
             System.out.println("Notyf message: " + successMessage.getText());
 
-            Assert.assertTrue(successMessage.getText().contains("Đăng nhập thất bại."));
+            Assert.assertTrue(successMessage.getText().contains("Sai tên đăng nhập hoặc mật khẩu."));
             result.add("Test login failed as expected!");
         } catch (Exception e) {
             result.add("Test case failed due to error: " + e.getMessage());
@@ -102,7 +108,7 @@ public class LoginTest {
 
             System.out.println("Notyf message: " + successMessage.getText());
 
-            Assert.assertTrue(successMessage.getText().contains("Đăng nhập thất bại."));
+            Assert.assertTrue(successMessage.getText().contains("Sai tên đăng nhập hoặc mật khẩu."));
 
             result.add("Test login with non-existing account passed!");
         } catch (Exception e) {
@@ -126,7 +132,7 @@ public class LoginTest {
 
             System.out.println("Notyf message: " + successMessage.getText());
 
-            Assert.assertTrue(successMessage.getText().contains("Đăng nhập thất bại."));
+            Assert.assertTrue(successMessage.getText().contains("Sai tên đăng nhập hoặc mật khẩu."));
 
             result.add("Test login with non-existing account passed!");
         } catch (Exception e) {
@@ -150,7 +156,7 @@ public class LoginTest {
 
             System.out.println("Notyf message: " + successMessage.getText());
 
-            Assert.assertTrue(successMessage.getText().contains("Đăng nhập thất bại."));
+            Assert.assertTrue(successMessage.getText().contains("Sai tên đăng nhập hoặc mật khẩu."));
 
             result.add("Test login with non-existing account passed!");
         } catch (Exception e) {
@@ -174,7 +180,7 @@ public class LoginTest {
 
             System.out.println("Notyf message: " + successMessage.getText());
 
-            Assert.assertTrue(successMessage.getText().contains("Đăng nhập thất bại."));
+            Assert.assertTrue(successMessage.getText().contains("Sai tên đăng nhập hoặc mật khẩu."));
 
             result.add("Test login with non-existing account passed!");
         } catch (Exception e) {
@@ -198,13 +204,48 @@ public class LoginTest {
 
             System.out.println("Notyf message: " + successMessage.getText());
 
-            Assert.assertTrue(successMessage.getText().contains("Đăng nhập thất bại."));
+            Assert.assertTrue(successMessage.getText().contains("Sai tên đăng nhập hoặc mật khẩu."));
 
             result.add("Test login with non-existing account passed!");
         } catch (Exception e) {
             result.add("Test login with non-existing account failed: " + e.getMessage());
         }
     }
+
+    @Test(groups = "testLogin", description = "Test Case login: Test router Đăng ký")
+    public void testCheckRouterRegister() {
+        try {
+            WebElement registerRouter = driver.findElement(By.cssSelector("#router-register"));
+
+            registerRouter.click();
+
+            boolean title = wait.until(ExpectedConditions.titleIs("Đăng ký"));
+
+            log.info("Title ", title);
+
+            Assert.assertTrue(title);
+
+            result.add("Test login with non-existing account passed!");
+        } catch (Exception e) {
+            result.add("Test login with non-existing account failed: " + e.getMessage());
+        }
+    }
+
+    @Test(groups = "testLogin", description = "Kiểm tra token khi người dùng đăng nhập")
+    public void testLoginReturnsToken() {
+        given()
+                .baseUri("http://localhost:8080")
+                .contentType("application/json")
+                .body("{ \"username\": \"hung\", \"password\": \"123\" }")
+                .when()
+                .post("/api/login")
+                .then()
+                // Conditions
+                .statusCode(200)
+                .body("authenticated", equalTo(true))
+                .body("token", notNullValue());
+    }
+
 
     @AfterSuite
     public void tearDown() throws IOException {

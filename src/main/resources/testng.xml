@@ -5,4 +5,17 @@
             <class name="demo.restfulapi.LoginTest"/>
         </classes>
     </test>
+
+    <test name="Register Test">
+        <classes>
+            <class name="demo.restfulapi.RegisterTest"/>
+        </classes>
+    </test>
+
+    <test name="Payment Test">
+        <classes>
+            <class name="demo.restfulapi.PaymentTest"/>
+        </classes>
+    </test>
+
 </suite>

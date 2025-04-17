@@ -45,6 +45,7 @@ public class PaymentTest {
         // Home page
         WebElement addToCartButton = driver.findElement(By.cssSelector("#add-to-cart"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", addToCartButton);
+
         WebElement successMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".notyf__message")));
         Assert.assertTrue(successMessage.getText().contains("Đã thêm sản phẩm!"));
 
@@ -57,12 +58,9 @@ public class PaymentTest {
         Thread.sleep(2000);
         driver.findElement(By.id("checkout")).click();
 
-        // Get invoice id
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        String invoiceId = (String) js.executeScript("return localStorage.getItem('orderId');");
+        boolean title = wait.until(ExpectedConditions.titleIs("Hóa đơn"));
+        Assert.assertTrue(title);
 
-        /*String expectedUrl = "http://localhost:5173/invoice/" + invoiceId;
-        Assert.assertEquals(driver.getCurrentUrl(), expectedUrl);*/
     }
 
 }

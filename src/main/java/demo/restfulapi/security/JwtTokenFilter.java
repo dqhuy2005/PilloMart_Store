@@ -19,7 +19,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Nếu cần verify token thì xử lý ở đây
         filterChain.doFilter(request, response);
     }
 }

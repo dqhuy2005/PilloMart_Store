@@ -85,12 +85,10 @@ public class CartService {
         return response;
     }
 
-    @Transactional
     public CartResponse addToCart(Integer userId, CartRequest request) {
         Product product = productRepository.findById(request.getProductId()).orElseThrow(() -> new RuntimeException("Product not found."));
-        Account account = accountRepository.findById(userId).orElseThrow(() -> new RuntimeException("Account not found."));
+        Account account = accountRepository.findById(userId).orElseThrow(() -> new NullPointerException("Account not found."));
 
-        // Đã có sẵn trong giỏ hàng
         Cart existsCart = cartRepository.selectCartByUserIdAndProductId(userId, product.getId());
         if (existsCart != null) {
             existsCart.setQuantity(existsCart.getQuantity() + request.getQuantity());
@@ -116,10 +114,6 @@ public class CartService {
 
         // List<Cart> -> List<CartResponse>
         return carts.stream().map(this::mapToCartResponse).collect(Collectors.toList());
-    }
-
-    public void deleteCart(Integer userId) {
-        cartRepository.deleteCartWithUserId(userId);
     }
 
     @Transactional

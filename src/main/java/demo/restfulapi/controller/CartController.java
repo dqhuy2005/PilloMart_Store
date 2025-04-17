@@ -32,6 +32,7 @@ public class CartController {
     @PostMapping("/add")
     public ResponseEntity<CartResponse> addToCart(@RequestHeader("Authorization") String token, @RequestBody CartRequest request) throws ParseException {
         Integer userId = jwtUtil.existsUserId(token);
+        System.out.println("Token: " + token);
         return ResponseEntity.ok(cartService.addToCart(userId, request));
     }
 
